@@ -1,7 +1,7 @@
 import re
 
 inp = tuple(map(lambda ab: tuple(map(int, ab.split('-'))),
-                open('inp_my.txt').readline().strip().split(',')))
+                open('inp_muuh.txt').readline().strip().split(',')))
 print(inp)
 
 pat = re.compile(r'^(\d+)\1+$')

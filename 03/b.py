@@ -1,20 +1,20 @@
 inp= tuple(map(str.strip,
-               open('inp_my.txt').readlines()))
+               open('inp_ex.txt').readlines()))
 
-js=[]
-for l in inp:
-    pA = 0
-    pE = len(l) - 1
-    nA = int(l[pA])
-    nE = int(l[pE])
-    for p in range(pA+1, pE):
-        d = int(l[p])
-        if d > nA:
-            pA = p
-            nA = d
-    for p in range(pE-1, pA, -1):
-        d = int(l[p])
-        if d > nE:
-            nE = d
-    js.append(int(nA *10 + nE))
-print('>', sum(js))
+stellen = 12
+bank_len = len(inp[0])
+
+zahlen = []
+for bank in inp:
+    fenster_start = 0
+    ziffern = []
+    for z in range(1, stellen+1):
+        fenster_weite = bank_len - fenster_start - stellen + z
+        fenster = bank[fenster_start:fenster_start+fenster_weite]
+        hochster_wert_im_fenster = max(fenster)
+        ziffern.append(hochster_wert_im_fenster)
+        fenster_start += fenster.find(hochster_wert_im_fenster) + 1
+    zahl = int(''.join(ziffern))
+    print(zahl)
+    zahlen.append(zahl)
+print('sum', sum(zahlen))

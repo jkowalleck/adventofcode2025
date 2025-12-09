@@ -1,29 +1,25 @@
-inp = list(map(lambda l: list(l.strip()), open('inp_muuh.txt').readlines()))
+inp = list(map(lambda l: list(l.strip()), open('inp_ex.txt').readlines()))
 print(*inp, sep='\n')
 print('')
 
-board = [[{
-              '.': 0,
-              '^': '^',
-              'S': 'S'
-          }[l] for l in line
-          ] for line in inp]
-print(*board, sep='\n')
-print('')
+for line in inp:
+    for c, i in enumerate(line):
+        if i == '.':
+            line[c] = 0
 
-start = board[0].index('S')
-board[1][start] += 1
-for l in range(1, len(board) - 1):
-    for c in range(0, len(board[l])):
-        s = board[l][c]
+start = inp[0].index('S')
+inp[1][start] += 1
+for l in range(1, len(inp) - 1):
+    for c in range(0, len(inp[l])):
+        s = inp[l][c]
         if type(s) is not int:
             continue
         b = l + 1
-        below = board[b][c]
+        below = inp[b][c]
         if below == '^':
-            board[b][c - 1] += s
-            board[b][c + 1] += s
+            inp[b][c - 1] += s
+            inp[b][c + 1] += s
         else:
-            board[b][c] += s
-print(*board, sep='\n')
-print(sum(board[-1]))
+            inp[b][c] += s
+print(*inp, sep='\n')
+print(sum(inp[-1]))

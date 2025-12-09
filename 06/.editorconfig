@@ -1,0 +1,5 @@
+root = true
+[*.bin]
+end_of_line = lf
+trim_trailing_whitespace = false
+insert_final_newline = false

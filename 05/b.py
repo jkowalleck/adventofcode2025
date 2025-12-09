@@ -16,9 +16,9 @@ while True:
     for a, b in combinations(ranges, 2):
         (af, at), (bf, bt) = a, b
         if bf <= af <= bt or \
-                bf <= at <= bt or \
-                af <= bf <= at or \
-                af <= bt <= at:
+           bf <= at <= bt or \
+           af <= bf <= at or \
+           af <= bt <= at:
             ranges.remove(a)
             ranges.remove(b)
             ranges.append((min(af, bf), max(at, bt)))

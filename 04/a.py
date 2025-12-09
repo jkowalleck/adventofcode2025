@@ -16,12 +16,12 @@ for y in range(1, len(regal) - 1):
             brett += ding
             continue
         nachbarn = int(regal[y - 1][x - 1] == ding) + \
-                   int(regal[y - 1][x] == ding) + \
+                   int(regal[y - 1][x    ] == ding) + \
                    int(regal[y - 1][x + 1] == ding) + \
-                   int(regal[y][x - 1] == ding) + \
-                   int(regal[y][x + 1] == ding) + \
+                   int(regal[y    ][x - 1] == ding) + \
+                   int(regal[y    ][x + 1] == ding) + \
                    int(regal[y + 1][x - 1] == ding) + \
-                   int(regal[y + 1][x] == ding) + \
+                   int(regal[y + 1][x    ] == ding) + \
                    int(regal[y + 1][x + 1] == ding)
         brett += 'x' if nachbarn < 4 else ding
     regalN.append(brett)

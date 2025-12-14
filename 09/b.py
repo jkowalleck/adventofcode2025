@@ -5,21 +5,24 @@ Point = namedtuple('Point', ['x', 'y'])
 Line = namedtuple('Line', ['p1', 'p2'])
 
 
-def area(a: Point, b: Point) -> float:
-    return (abs(b.x - a.x) + 1) * (abs(b.y - a.y) + 1)
+def area(p1: Point, p2: Point) -> float:
+    return (abs(p1.x - p2.x) + 1) * (abs(p1.y - p2.y) + 1)
 
 
-inp: list[Point] = list(Point(*map(int, l.strip().split(','))) for l in open('inp_mu.txt.bin').readlines())
+inp = list(Point(*map(int, l.strip().split(','))) for l in open('inp_mu.txt.bin').readlines())
 
-horrs: list[Line] = []
-verts: list[Line] = []
+horrs, verts = [], []
 for p1, p2 in chain(pairwise(inp), ((inp[0], inp[-1]),)):
     if p1.x == p2.x:
-        verts.append(Line(p1, p2) if p1.y < p2.y else Line(p2, p1))
+        verts.append(Line(p1, p2)
+                     if p1.y < p2.y
+                     else Line(p2, p1))
     else:
-        horrs.append(Line(p1, p2) if p1.x < p2.x else Line(p2, p1))
+        horrs.append(Line(p1, p2)
+                     if p1.x < p2.x
+                     else Line(p2, p1))
 
-rects: list[tuple[Point, Point, float]] = [(a, b, area(a, b)) for a, b in combinations(inp, 2)]
+rects = [(p1, p2, area(p1, p2)) for p1, p2 in combinations(inp, 2)]
 rects.sort(key=lambda d: d[2], reverse=True)
 
 for p1, p2, area in rects:

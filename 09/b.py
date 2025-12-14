@@ -9,7 +9,7 @@ def area(a: Point, b: Point) -> float:
     return (abs(b.x - a.x) + 1) * (abs(b.y - a.y) + 1)
 
 
-inp = tuple(Point(*map(int, l.strip().split(','))) for l in open('inp_mu.txt.bin').readlines())
+inp: list[Point] = list(Point(*map(int, l.strip().split(','))) for l in open('inp_mu.txt.bin').readlines())
 
 rects: list[tuple[Point, Point, float]] = [(a, b, area(a, b)) for a, b in combinations(inp, 2)]
 rects.sort(key=lambda d: d[2], reverse=True)

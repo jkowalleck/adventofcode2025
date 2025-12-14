@@ -11,9 +11,6 @@ def area(a: Point, b: Point) -> float:
 
 inp: list[Point] = list(Point(*map(int, l.strip().split(','))) for l in open('inp_mu.txt.bin').readlines())
 
-rects: list[tuple[Point, Point, float]] = [(a, b, area(a, b)) for a, b in combinations(inp, 2)]
-rects.sort(key=lambda d: d[2], reverse=True)
-
 horrs: list[Line] = []
 verts: list[Line] = []
 for p1, p2 in chain(pairwise(inp), ((inp[0], inp[-1]),)):
@@ -21,6 +18,9 @@ for p1, p2 in chain(pairwise(inp), ((inp[0], inp[-1]),)):
         verts.append(Line(p1, p2) if p1.y < p2.y else Line(p2, p1))
     else:
         horrs.append(Line(p1, p2) if p1.x < p2.x else Line(p2, p1))
+
+rects: list[tuple[Point, Point, float]] = [(a, b, area(a, b)) for a, b in combinations(inp, 2)]
+rects.sort(key=lambda d: d[2], reverse=True)
 
 for p1, p2, area in rects:
     x_min, x_max = min(p1.x, p2.x), max(p1.x, p2.x)

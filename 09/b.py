@@ -1,11 +1,7 @@
 from collections import namedtuple
-from itertools import combinations, pairwise
+from itertools import combinations, pairwise, chain
 
 Point = namedtuple('Point', ['x', 'y'])
-
-inp = tuple(map(lambda l: Point(*map(int, l.strip().split(','))), open('inp_ex.txt.bin').readlines()))
-print(repr(inp))
-
 Line = namedtuple('Line', ['p1', 'p2'])
 
 
@@ -13,44 +9,33 @@ def area(a: Point, b: Point) -> float:
     return (abs(b.x - a.x) + 1) * (abs(b.y - a.y) + 1)
 
 
-hull: list[Line] = list(Line(p1, p2) for p1, p2 in pairwise(inp))
-hull.append(Line(inp[-1], inp[0]))
-print('hull', *hull, sep='\n')
+inp = tuple(Point(*map(int, l.strip().split(','))) for l in open('inp_mu.txt.bin').readlines())
 
-def inters(l1: Line, l2: Line) -> bool:
-    l1_vertical = l1.p1.x == l1.p2.x
-    l2_vertical = l2.p1.x == l2.p2.x
-    if l1_vertical
+areas: list[tuple[Point, Point, float]] = [(a, b, area(a, b)) for a, b in combinations(inp, 2)]
+areas.sort(key=lambda d: d[2], reverse=True)
 
+horrs: list[Line] = []
+verts: list[Line] = []
+for p1, p2 in chain(pairwise(inp), ((inp[0], inp[-1]),)):
+    if p1.x == p2.x:
+        if p1.y < p2.y:
+            verts.append(Line(p1, p2))
+        else:
+            verts.append(Line(p2, p1))
+    else:
+        if p1.x < p2.x:
+            horrs.append(Line(p1, p2))
+        else:
+            horrs.append(Line(p2, p1))
 
-areas = [(a, b, area(a, b)) for a, b in combinations(inp, 2)]
-areas.sort(key=lambda d: d[2])
-print('areas', *areas, sep='\n')
-
-for a, b, area in areas:
-    c, d = Point(a.x, b.y), Point(b.x, a.y)
-    lac = Line(a, c)
-    lcb = Line(c, b)
-    lbd = Line(b, d)
-    lda = Line(d, a)
-    for l in (lac, lcb, lbd, lda):
-        for h in hull:
-            pass # TODO: linie kuerzen
-            if ...:
-                break
-    oops = False
-    if oops:
-        print('oops', oops)
+for p1, p2, area in areas:
+    x_min, x_max = min(p1.x, p2.x), max(p1.x, p2.x)
+    y_min, y_max = min(p1.y, p2.y), max(p1.y, p2.y)
+    if any(p1.y <= y_min < p2.y or p1.y < y_max <= p2.y
+           for p1, p2 in verts if x_min < p1.x < x_max):
         continue
-    print('res', area)
+    if any(p1.x <= x_min < p2.x or p1.x < x_max <= p2.x
+           for p1, p2 in horrs if y_min < p1.y < y_max):
+        continue
+    print('largest: ', area)
     break
-
-"""
-   ##
-#xx0#xxxx#   
-xxxxxxxxx#xx#
-0xxx#xxxxxxxx
-    xxx#xxxx#
-  #x#xxx
-  #xxxx#
-"""

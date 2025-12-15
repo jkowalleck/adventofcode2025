@@ -11,11 +11,12 @@ def buttons_from_inp(ll: int, inp: str) -> int:
 
 
 def solve(goal: int, buttons: tuple[int, ...]) -> int:
+    start = 0
     steps = 0
     if goal == 0:
         return steps
-    knowns = [0]
-    states = [0]
+    knowns = [start]
+    states = [start]
     while len(states) > 0:
         steps += 1
         states_next = []

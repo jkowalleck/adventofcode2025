@@ -25,14 +25,14 @@ for p1, p2 in chain(pairwise(inp), ((inp[0], inp[-1]),)):
 rects = [(p1, p2, area(p1, p2)) for p1, p2 in combinations(inp, 2)]
 rects.sort(key=lambda d: d[2], reverse=True)
 
-for p1, p2, area in rects:
-    x_min, x_max = min(p1.x, p2.x), max(p1.x, p2.x)
-    y_min, y_max = min(p1.y, p2.y), max(p1.y, p2.y)
-    if any(p1.y <= y_min < p2.y or p1.y < y_max <= p2.y
-           for p1, p2 in verts if x_min < p1.x < x_max):
+for rp1, rp2, area in rects:
+    x_min, x_max = min(rp1.x, rp2.x), max(rp1.x, rp2.x)
+    y_min, y_max = min(rp1.y, rp2.y), max(rp1.y, rp2.y)
+    if any(vp1.y <= y_min < vp2.y or vp1.y < y_max <= vp2.y
+           for vp1, vp2 in verts if x_min < vp1.x < x_max):
         continue
-    if any(p1.x <= x_min < p2.x or p1.x < x_max <= p2.x
-           for p1, p2 in horrs if y_min < p1.y < y_max):
+    if any(hp1.x <= x_min < hp2.x or hp1.x < x_max <= hp2.x
+           for hp1, hp2 in horrs if y_min < hp1.y < y_max):
         continue
     print('largest: ', area)
     break

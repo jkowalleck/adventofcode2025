@@ -26,6 +26,7 @@ def _solve(goal: tuple[int, ...], state: tuple[int, ...], buttons: tuple[tuple[i
             continue
         sol = _solve(goal, state_next, buttons, steps, best)
         best = min(best, sol)
+    print(best)
     return best
 
 
@@ -33,7 +34,7 @@ def solve(goal: tuple[int, ...], buttons: tuple[tuple[int, ...], ...]):
     return _solve(goal, (0,) * len(goal), buttons, 0, sum(goal))
 
 res = 0
-for line in open('inp_ex.txt.bin').readlines():
+for line in open('inp_ko.txt.bin').readlines():
     lp = line.strip().split(' ')
     joltages = joltage_from_inp(lp[-1][1:-1])
     _jl = len(joltages)

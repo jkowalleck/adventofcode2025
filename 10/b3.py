@@ -24,7 +24,7 @@ for inp in open('inp_ex.txt.bin'):
     del inp
     buttons4joltages = tuple(tuple(b for b in buttons if j in b) for j in range(0, len(joltages)))
     presses_min, presses_max = max(joltages), sum(joltages)
-    states = [(0, tuple(0 for _ in joltages), ())]
+    states = [(0, tuple(0 for _ in joltages))]
     best = presses_max
     joltages_set = []
     for j in joltages_ordered(joltages):
@@ -33,7 +33,7 @@ for inp in open('inp_ex.txt.bin'):
             continue
         states_next = []
         for state in states:
-            state_pressed, state_joltages, state_buttons_pressed = state
+            state_pressed, state_joltages = state
             target_joltage = joltages[j] - state_joltages[j]
             if target_joltage < 0:
                 continue  # joltage - unsolvable
@@ -64,14 +64,14 @@ for inp in open('inp_ex.txt.bin'):
                 states_next.append((
                     button_presses,
                     tuple(attempt_joltages),
-                    tuple(chain(
-                        state_buttons_pressed,
-                        ((buttons_possible[b4j], presses) for b4j, presses in enumerate(b4j_presses) if presses > 0)
-                    ))
+                    # tuple(chain(
+                    #    state_buttons_pressed,
+                    #    ((buttons_possible[b4j], presses) for b4j, presses in enumerate(b4j_presses) if presses > 0)
+                    #))
                 ))
         states = states_next
         joltages_set.append(j)
-    best = min(pressed for pressed, state, _ in states if state == joltages)
+    best = min(pressed for pressed, state in states if state == joltages)
     print('best', best)
     bests.append(best)
 print('bests', repr(bests))

@@ -1,15 +1,77 @@
+from itertools import chain
+from typing import Generator
 
 
+def summands(s: int, m: int) -> Generator[tuple[int, ...], None, None]:
+    if m == 1:
+        yield (s,)
+        return None
+    for i in range(s + 1):
+        for rest in summands(s - i, m - 1):
+            yield (i,) + rest
+    return None
 
-"""
+def joltages_ordered(js: tuple[int, ...]) -> tuple[int, ...]:
+    return tuple(sorted(range(len(js)), key=lambda j: js[j]))
 
-def sumamnds(s, m) -> tuple[int, ...]:
-    # s(12) in m(5) summanden
-    return (2,2,3,4,1)
+res = []
 
-
-(0,0,2) (0,2,0) (3,0,0) (4,0,4) (1,1,1)
-{3,12,4}
-
-
-"""
+for inp in open('inp_ko.txt.bin'):
+    inp = inp.strip().split(' ')
+    buttons = tuple(tuple(map(int, i[1:-1].split(','))) for i in inp[1:-1])
+    joltages = tuple(map(int, inp[-1][1:-1].split(',')))
+    del inp
+    buttons4joltages = tuple((tuple(b for b in buttons if j in b) for j in range(0, len(joltages))))
+    presses_min, presses_max = max(joltages), sum(joltages)
+    states = [(0, tuple(0 for _ in joltages), ())]
+    best = presses_max
+    already_solved = []
+    for j in joltages_ordered(joltages):
+        buttons_possible = tuple(filter(lambda b: all(b4j not in already_solved for b4j in b), buttons4joltages[j]))
+        if not buttons_possible:
+            continue
+        states_next = []
+        for state in states:
+            state_pressed, state_joltages, state_buttons_pressed = state
+            target_joltage = joltages[j] - state_joltages[j]
+            if target_joltage < 0:
+                continue  # joltage - unsolvable
+            if target_joltage == 0:
+                if state_joltages == joltages:
+                    best = min(best, state_pressed)
+                states_next.append(state)
+                continue  # joltage - solved already
+            button_presses = state_pressed + target_joltage
+            if best < button_presses:
+                continue  # we already have a better one
+            for b4j_presses in summands(target_joltage, len(buttons_possible)):
+                attempt_joltages = list(state_joltages)
+                valid = True
+                for b4j, presses in enumerate(b4j_presses):
+                    if presses == 0:
+                        continue
+                    for j_affected in buttons_possible[b4j]:
+                        attempt_joltage = attempt_joltages[j_affected] + presses
+                        if attempt_joltage > joltages[j_affected]:
+                            valid = False
+                            break
+                        attempt_joltages[j_affected] = attempt_joltage
+                    if not valid:
+                        break
+                if not valid:
+                    continue
+                states_next.append((
+                    button_presses,
+                    tuple(attempt_joltages),
+                    tuple(chain(
+                        state_buttons_pressed,
+                        ((buttons_possible[b4j], presses) for b4j, presses in enumerate(b4j_presses) if presses > 0)
+                    ))
+                ))
+        states = states_next
+        already_solved.append(j)
+    best = min(pressed for pressed, state, _ in states if state == joltages)
+    print('best:', best)
+    res.append(best)
+print('res', repr(res))
+print('res', sum(res))

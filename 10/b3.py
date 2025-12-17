@@ -11,8 +11,10 @@ def summands(s: int, m: int) -> Generator[tuple[int, ...], None, None]:
             yield (i,) + rest
     return None
 
+
 def joltages_ordered(js: tuple[int, ...]) -> tuple[int, ...]:
     return tuple(sorted(range(len(js)), key=lambda j: js[j]))
+
 
 bests = []
 for inp in open('inp_ex.txt.bin'):

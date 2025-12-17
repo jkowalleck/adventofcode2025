@@ -17,7 +17,7 @@ def joltages_ordered(js: tuple[int, ...]) -> tuple[int, ...]:
 
 
 bests = []
-for inp in open('inp_ex.txt.bin'):
+for inp in open('inp_ko.txt.bin'):
     inp = inp.strip().split(' ')
     buttons = tuple(tuple(map(int, i[1:-1].split(','))) for i in inp[1:-1])
     joltages = tuple(map(int, inp[-1][1:-1].split(',')))
@@ -27,7 +27,10 @@ for inp in open('inp_ex.txt.bin'):
     states = [(0, tuple(0 for _ in joltages))]
     best = presses_max
     joltages_set = []
+    solved = False
     for j in joltages_ordered(joltages):
+        if solved:
+            break
         buttons_possible = tuple(b for b in buttons4joltages[j] if not any(j in joltages_set for j in b))
         if not buttons_possible:
             continue
@@ -39,6 +42,7 @@ for inp in open('inp_ex.txt.bin'):
                 continue  # joltage - unsolvable
             if target_joltage == 0:
                 if state_joltages == joltages:
+                    solved = True
                     best = min(best, state_pressed)
                 states_next.append(state)
                 continue  # joltage - solved already
@@ -63,11 +67,7 @@ for inp in open('inp_ex.txt.bin'):
                     continue
                 states_next.append((
                     button_presses,
-                    tuple(attempt_joltages),
-                    # tuple(chain(
-                    #    state_buttons_pressed,
-                    #    ((buttons_possible[b4j], presses) for b4j, presses in enumerate(b4j_presses) if presses > 0)
-                    #))
+                    tuple(attempt_joltages)
                 ))
         states = states_next
         joltages_set.append(j)

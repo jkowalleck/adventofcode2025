@@ -13,7 +13,7 @@ def summands(s: int, m: int) -> Generator[tuple[int, ...], None, None]:
 
 
 def joltages_ordered(js: tuple[int, ...]) -> tuple[int, ...]:
-    return tuple(sorted(range(len(js)), key=lambda j: js[j]))
+    return tuple(sorted(range(len(js)), key=lambda j: js[j], reverse=False))
 
 
 bests = []
@@ -41,9 +41,6 @@ for inp in open('inp_ko.txt.bin'):
             if target_joltage < 0:
                 continue  # joltage - unsolvable
             if target_joltage == 0:
-                if state_joltages == joltages:
-                    solved = True
-                    best = min(best, state_pressed)
                 states_next.append(state)
                 continue  # joltage - solved already
             button_presses = state_pressed + target_joltage
@@ -65,12 +62,17 @@ for inp in open('inp_ko.txt.bin'):
                         break
                 if not valid:
                     continue
+                attempt_joltages = tuple(attempt_joltages)
                 states_next.append((
                     button_presses,
-                    tuple(attempt_joltages)
+                    attempt_joltages
                 ))
-        states = states_next
+                if attempt_joltages == joltages:
+                    solved = True
+                    best = min(best, state_pressed)
+                    break
         joltages_set.append(j)
+        states = states_next
     best = min(pressed for pressed, state in states if state == joltages)
     print('best', best)
     bests.append(best)

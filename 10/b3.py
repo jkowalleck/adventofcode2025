@@ -14,20 +14,19 @@ def summands(s: int, m: int) -> Generator[tuple[int, ...], None, None]:
 def joltages_ordered(js: tuple[int, ...]) -> tuple[int, ...]:
     return tuple(sorted(range(len(js)), key=lambda j: js[j]))
 
-res = []
-
-for inp in open('inp_ko.txt.bin'):
+bests = []
+for inp in open('inp_ex.txt.bin'):
     inp = inp.strip().split(' ')
     buttons = tuple(tuple(map(int, i[1:-1].split(','))) for i in inp[1:-1])
     joltages = tuple(map(int, inp[-1][1:-1].split(',')))
     del inp
-    buttons4joltages = tuple((tuple(b for b in buttons if j in b) for j in range(0, len(joltages))))
+    buttons4joltages = tuple(tuple(b for b in buttons if j in b) for j in range(0, len(joltages)))
     presses_min, presses_max = max(joltages), sum(joltages)
     states = [(0, tuple(0 for _ in joltages), ())]
     best = presses_max
-    already_solved = []
+    joltages_set = []
     for j in joltages_ordered(joltages):
-        buttons_possible = tuple(filter(lambda b: all(b4j not in already_solved for b4j in b), buttons4joltages[j]))
+        buttons_possible = tuple(b for b in buttons4joltages[j] if not any(j in joltages_set for j in b))
         if not buttons_possible:
             continue
         states_next = []
@@ -42,7 +41,7 @@ for inp in open('inp_ko.txt.bin'):
                 states_next.append(state)
                 continue  # joltage - solved already
             button_presses = state_pressed + target_joltage
-            if best < button_presses:
+            if best <= button_presses:
                 continue  # we already have a better one
             for b4j_presses in summands(target_joltage, len(buttons_possible)):
                 attempt_joltages = list(state_joltages)
@@ -69,9 +68,9 @@ for inp in open('inp_ko.txt.bin'):
                     ))
                 ))
         states = states_next
-        already_solved.append(j)
+        joltages_set.append(j)
     best = min(pressed for pressed, state, _ in states if state == joltages)
-    print('best:', best)
-    res.append(best)
-print('res', repr(res))
-print('res', sum(res))
+    print('best', best)
+    bests.append(best)
+print('bests', repr(bests))
+print('res', sum(bests))

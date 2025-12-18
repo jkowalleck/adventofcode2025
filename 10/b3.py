@@ -13,7 +13,7 @@ def summands(s: int, m: int) -> Generator[tuple[int, ...], None, None]:
 
 
 def joltages_ordered(js: tuple[int, ...]) -> tuple[int, ...]:
-    return tuple(sorted(range(len(js)), key=lambda j: js[j], reverse=False))
+    return tuple(sorted(range(len(js)), key=lambda j: js[j]))
 
 
 bests = []
@@ -27,10 +27,7 @@ for inp in open('inp_ex.txt.bin'):
     states = [(0, tuple(0 for _ in joltages))]
     best = presses_max
     joltages_set = []
-    solved = False
     for j in joltages_ordered(joltages):
-        if solved:
-            break
         buttons_possible = tuple(b for b in buttons4joltages[j] if not any(j in joltages_set for j in b))
         if not buttons_possible:
             continue
@@ -41,6 +38,8 @@ for inp in open('inp_ex.txt.bin'):
             if target_joltage < 0:
                 continue  # joltage - unsolvable
             if target_joltage == 0:
+                if state_joltages == joltages:
+                    best = min(best, state_pressed)
                 states_next.append(state)
                 continue  # joltage - solved already
             button_presses = state_pressed + target_joltage
@@ -62,17 +61,12 @@ for inp in open('inp_ex.txt.bin'):
                         break
                 if not valid:
                     continue
-                attempt_joltages = tuple(attempt_joltages)
                 states_next.append((
                     button_presses,
-                    attempt_joltages
+                    tuple(attempt_joltages)
                 ))
-                if attempt_joltages == joltages:
-                    solved = True
-                    best = min(best, state_pressed)
-                    break
-        joltages_set.append(j)
         states = states_next
+        joltages_set.append(j)
     best = min(pressed for pressed, state in states if state == joltages)
     print('best', best)
     bests.append(best)

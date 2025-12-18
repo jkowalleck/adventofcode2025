@@ -5,11 +5,10 @@ from typing import Generator
 def summands(s: int, m: int) -> Generator[tuple[int, ...], None, None]:
     if m == 1:
         yield (s,)
-        return None
+        return
     for i in range(s + 1):
         for rest in summands(s - i, m - 1):
             yield (i,) + rest
-    return None
 
 
 def joltages_ordered(js: tuple[int, ...]) -> tuple[int, ...]:

@@ -22,7 +22,7 @@ for inp in open('inp_ex.txt.bin'):
     buttons = tuple(tuple(map(int, i[1:-1].split(','))) for i in inp[1:-1])
     joltages = tuple(map(int, inp[-1][1:-1].split(',')))
     del inp
-    buttons4joltages = tuple(tuple(b for b in buttons if j in b) for j in range(0, len(joltages)))
+    buttons4joltages = tuple(tuple(b for b in buttons if j in b) for j in range(len(joltages)))
     presses_min, presses_max = max(joltages), sum(joltages)
     states = [(0, tuple(0 for _ in joltages))]
     best = presses_max
@@ -40,7 +40,8 @@ for inp in open('inp_ex.txt.bin'):
             if target_joltage == 0:
                 if state_joltages == joltages:
                     best = min(best, state_pressed)
-                states_next.append(state)
+                else:
+                    states_next.append(state)
                 continue  # joltage - solved already
             button_presses = state_pressed + target_joltage
             if best <= button_presses:

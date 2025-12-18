@@ -4,6 +4,7 @@ from collections.abc import Iterable
 
 from typing import Generator
 
+
 def summands(s: int, bounds: tuple[int, ...]) -> Generator[tuple[int, ...], None, None]:
     m = len(bounds)
     if m == 1:
@@ -23,13 +24,15 @@ for inp in open('inp_ko.txt.bin'):
     del inp
     buttons4joltages = tuple(tuple(b for b in buttons if j in b) for j in range(len(joltages)))
     presses_min, presses_max = max(joltages), sum(joltages)
-    states = [(0, [0 for _ in joltages])]
     best = presses_max
+    solutions = []
     joltages_set = []
+    states = [(0, [0 for _ in joltages])]
     for j, joltage in enumerate(joltages):
         buttons_possible = tuple(b for b in buttons4joltages[j] if not any(j in joltages_set for j in b))
-        if not buttons_possible:
-            continue
+        if len(buttons_possible) == 0:
+            break  # impossible to continue
+        joltages_set.append(j)
         states_next = []
         for state in states:
             state_pressed, state_joltages = state
@@ -37,17 +40,13 @@ for inp in open('inp_ko.txt.bin'):
             if target_joltage < 0:
                 continue  # joltage - unsolvable
             if target_joltage == 0:
-                if state_joltages == joltages:
-                    best = min(best, state_pressed)
-                else:
-                    states_next.append(state)
+                states_next.append(state)
                 continue  # joltage - solved already
             button_presses = state_pressed + target_joltage
             if best <= button_presses:
                 continue  # we already have a better one
-            buttons_possible_len = len(buttons_possible)
             b4j_presses_max = tuple(min(joltages[j] - state_joltages[j] for j in b4j)
-                                   for b4j in buttons_possible)
+                                    for b4j in buttons_possible)
             for b4j_presses in summands(target_joltage, b4j_presses_max):
                 attempt_joltages = state_joltages[:]
                 valid = True
@@ -64,13 +63,14 @@ for inp in open('inp_ko.txt.bin'):
                         break
                 if not valid:
                     continue
-                states_next.append((
-                    button_presses,
-                    attempt_joltages
-                ))
+                attempt_state = (button_presses, attempt_joltages)
+                if attempt_joltages == joltages:
+                    solutions.append(attempt_state)
+                    best = min(best, button_presses)
+                    print('new best', attempt_state)
+                    continue
+                states_next.append(attempt_state)
         states = states_next
-        joltages_set.append(j)
-    best = min(pressed for pressed, state in states if state == joltages)
     print('best', best)
     bests.append(best)
 print('bests', repr(bests))

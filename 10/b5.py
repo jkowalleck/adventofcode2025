@@ -11,11 +11,6 @@ def summands(s: int, m: int) -> Generator[tuple[int, ...], None, None]:
             yield (i,) + rest
     return None
 
-
-def joltages_ordered(js: tuple[int, ...]) -> tuple[int, ...]:
-    return tuple(sorted(range(len(js)), key=lambda j: js[j], reverse=False))
-
-
 bests = []
 for inp in open('inp_ex.txt.bin'):
     inp = inp.strip().split(' ')
@@ -28,7 +23,7 @@ for inp in open('inp_ex.txt.bin'):
     best = presses_max
     joltages_set = []
     solved = False
-    for j in joltages_ordered(joltages):
+    for j, joltage in enumerate(joltages):
         if solved:
             break
         buttons_possible = tuple(b for b in buttons4joltages[j] if not any(j in joltages_set for j in b))
@@ -37,7 +32,7 @@ for inp in open('inp_ex.txt.bin'):
         states_next = []
         for state in states:
             state_pressed, state_joltages = state
-            target_joltage = joltages[j] - state_joltages[j]
+            target_joltage = joltage - state_joltages[j]
             if target_joltage < 0:
                 continue  # joltage - unsolvable
             if target_joltage == 0:
@@ -46,11 +41,22 @@ for inp in open('inp_ex.txt.bin'):
             button_presses = state_pressed + target_joltage
             if best <= button_presses:
                 continue  # we already have a better one
-            for b4j_presses in summands(target_joltage, len(buttons_possible)):
+            buttons_possible_len = len(buttons_possible)
+            b4j_presses_max = tuple(min(joltages[j] - state_joltages[j] for j in b4j)
+                                   for b4j in buttons_possible)
+            for b4j_presses in summands(target_joltage, buttons_possible_len):
+                if b4j_presses > b4j_presses_max:
+                    print('---')
+                    print('joltages', repr(joltages))
+                    print('state', repr(state))
+                    print('buttons_possible', repr(buttons_possible))
+                    print('b4j_presses', repr(b4j_presses))
+                    print('b4j_presses_max', repr(b4j_presses_max))
+                    pass
                 attempt_joltages = list(state_joltages)
                 valid = True
                 for b4j, presses in enumerate(b4j_presses):
-                    if presses == 0:
+                    if presses <= 0:
                         continue
                     for j_affected in buttons_possible[b4j]:
                         attempt_joltage = attempt_joltages[j_affected] + presses

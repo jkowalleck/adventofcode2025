@@ -1,19 +1,8 @@
 from itertools import chain
 from typing import Generator
 
-
-def summands(s: int, bounds: tuple[int, ...]) -> Generator[tuple[int, ...], None, None]:
-    m = len(bounds)
-    if m == 1:
-        if s <= bounds[0]:
-            yield (s,)
-        return
-    for i in range(min(s, bounds[0]) + 1):
-        for rest in summands(s - i, bounds[1:]):
-            yield (i,) + rest
-
 bests = []
-for inp in open('inp_ko.txt.bin'):
+for inp in open('inp_ex.txt.bin'):
     inp = inp.strip().split(' ')
     buttons = tuple(tuple(map(int, i[1:-1].split(','))) for i in inp[1:-1])
     joltages = list(map(int, inp[-1][1:-1].split(',')))
@@ -43,7 +32,6 @@ for inp in open('inp_ko.txt.bin'):
                 print('found', best)
                 return
             solve(joltages_b, presses, b)
-
 
 
     solve([0] * len(joltages), 0, 0)

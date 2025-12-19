@@ -25,8 +25,7 @@ def summands(s: int, bounds: tuple[int, ...], _d=0) -> Generator[tuple[int, ...]
 
 
 bests = []
-for inp in open('inp_ex.txt.bin'):
-    print(inp)
+for inp in open('inp_ko.txt.bin'):
     inp = inp.strip().split(' ')
     buttons = tuple(tuple(map(int, i[1:-1].split(','))) for i in inp[1:-1])
     joltages = list(map(int, inp[-1][1:-1].split(',')))
@@ -40,7 +39,6 @@ for inp in open('inp_ex.txt.bin'):
         bp_gen = summands(presses, b4j_presses_max)
         for buttons_pressed in bp_gen:
             stop = False
-            print('->', presses, buttons_pressed)
             state = state0[:]
             for button, pressed in enumerate(buttons_pressed):
                 if pressed == 0:
@@ -48,7 +46,6 @@ for inp in open('inp_ex.txt.bin'):
                 for j in buttons[button]:
                     state[j] += pressed
                     if state[j] > joltages[j]:
-                        print('stop', button)
                         stop = True
                         try:
                             bp_gen.send(button)

@@ -1,4 +1,5 @@
 from typing import Generator
+from random import shuffle
 
 
 def summands(s: int, bounds: tuple[int, ...], _d=0) -> Generator[tuple[int, ...], None | int, None]:

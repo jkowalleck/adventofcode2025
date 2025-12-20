@@ -1,19 +1,26 @@
-from itertools import chain
-from typing import Generator
-from collections.abc import Iterable
-
 from typing import Generator
 
 
-def summands(s: int, bounds: tuple[int, ...]) -> Generator[tuple[int, ...], None, None]:
+def summands(s: int, bounds: tuple[int, ...], _d=0) -> Generator[tuple[int, ...], None | int, None]:
     m = len(bounds)
     if m == 1:
         if s <= bounds[0]:
             yield (s,)
         return
+    stop = False
     for i in range(min(s, bounds[0]) + 1):
-        for rest in summands(s - i, bounds[1:]):
-            yield (i,) + rest
+        sums = summands(s - i, bounds[1:], _d + 1)
+        for rest in sums:
+            stop = yield (i,) + rest
+            if stop is not None:
+                try:
+                    sums.send(stop)
+                except:  # StopIteration
+                    pass
+                if stop := stop <= _d:
+                    break
+        if stop:
+            break
 
 
 bests = []
@@ -47,7 +54,8 @@ for inp in open('inp_ko.txt.bin'):
                 continue  # we already have a better one
             b4j_presses_max = tuple(min(joltages[j] - state_joltages[j] for j in b4j)
                                     for b4j in buttons_possible)
-            for b4j_presses in summands(target_joltage, b4j_presses_max):
+            sums = summands(target_joltage, b4j_presses_max)
+            for b4j_presses in sums:
                 attempt_joltages = state_joltages[:]
                 valid = True
                 for b4j, presses in enumerate(b4j_presses):
@@ -60,6 +68,10 @@ for inp in open('inp_ko.txt.bin'):
                             break
                         attempt_joltages[j_affected] = attempt_joltage
                     if not valid:
+                        try:
+                            sums.send(b4j)
+                        except:
+                            pass
                         break
                 if not valid:
                     continue

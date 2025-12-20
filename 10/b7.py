@@ -1,14 +1,15 @@
-# fast_solver_ortools.py
+"""THIS SOLUTION WAS AI GENERATED - and i did not actually read it, just had it running."""
+
 from ortools.sat.python import cp_model
 
-def build_matrix(buttons, b):
+def build_matrix(buttons, joltages):
     # buttons: list of tuples of indices
     # b: target list (may be shorter/longer)
-    if not buttons and not b:
+    if not buttons and not joltages:
         return [], []
     max_idx = max((max(btn) for btn in buttons if btn), default=-1)
-    m = max(len(b), max_idx + 1 if max_idx >= 0 else 0)
-    b_ext = b[:] + [0] * (m - len(b))
+    m = max(len(joltages), max_idx + 1 if max_idx >= 0 else 0)
+    b_ext = joltages[:] + [0] * (m - len(joltages))
     n = len(buttons)
     A = [[0]*n for _ in range(m)]
     for j, btn in enumerate(buttons):

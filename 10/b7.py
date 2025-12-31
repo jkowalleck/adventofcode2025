@@ -54,7 +54,7 @@ def solve(buttons, joltages, upper_bound=None):
 
 
 bests = []
-for inp in open('inp_ko.txt.bin'):
+for inp in open('inp_mu.txt.bin'):
     inp = inp.strip().split(' ')
     buttons = list(tuple(map(int, i[1:-1].split(','))) for i in inp[1:-1])
     joltages = list(map(int, inp[-1][1:-1].split(',')))

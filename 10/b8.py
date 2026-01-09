@@ -41,19 +41,19 @@ b0   b1    b2  b3    b4    b5     joltage
 3*j0 =                     b4 + b5
 5*j1 =      b1                + b5
 4*j2 =           b2 + b3 + b4
-7*j3 = b0 + b1           + b3
+7*j3 = b0 + b1      + b3
 
 0 =                     b4 + b5 - 3
 0 =      b1                + b5 - 5
 0 =           b2 + b3 + b4      - 4
-0 = b0 + b1           + b3      - 7
+0 = b0 + b1      + b3           - 7
 
 0 + 0 + 0 + 0 = (b4 + b5 - 3) + ( b1+ b5 - 5 ) + ( b2 + b3 + b4 - 4) + (b0 + b1 + b3 - 7)
 0 + 0 + 0 + 0 = b4 + b5 - 3 +  b1 + b5 - 5 + b2 + b3 + b4 - 4 + b0 + b1 + b3 - 7
-3 + b + 4 + 7 = b4 + b5 + b1 + b5 + b2 + b3 + b4 + b0 + b1 + b3
+3 + 5 + 4 + 7 = b4 + b5 + b1 + b5 + b2 + b3 + b4 + b0 + b1 + b3
 19 = b[0] + (2*b[1]) + b[2] + (2*b[3]) + (2*b[4]) + (2*b[5])
 
-naaa.... must not sum those factors of j0..jn ... lets try anyway, t osee how "fast" it might be to generate "all" solutions.
+naaa.... must not sum those factors of j0..jn ... lets try anyway, to see how "fast" it might be to generate "all" solutions.
 """
 
 # for s in summands(19, (1, 2, 1, 2, 2, 2)): print(s);
